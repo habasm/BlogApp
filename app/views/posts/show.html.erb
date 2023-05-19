@@ -1,1 +1,17 @@
-<h3>This is the details of a specific post by a given user</h3>
+<% content_for :title, "#{@user.name} | #{@post.title}" %>
+<h1>Posts#show</h1>
+<section class="post-comments">
+  <section class="post">
+    <%= render "user_post", post: @post %>
+  </section>
+  <div class="user-post-comments">
+    <% @post.comments.each do |comment| %>
+      <div class="post-comment">
+        <p>
+          <span><strong><%= comment.author.name %>:</strong></span>
+          <span><%= comment.text %></span>
+        </p>
+      </div>
+    <% end %>
+  <div>
+</section>
