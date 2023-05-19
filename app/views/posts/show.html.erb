@@ -1,17 +1,35 @@
-<% content_for :title, "#{@user.name} | #{@post.title}" %>
-<h1>Posts#show</h1>
-<section class="post-comments">
-  <section class="post">
-    <%= render "user_post", post: @post %>
-  </section>
-  <div class="user-post-comments">
+<h2>Details of post for a given ID</h2>
+<div class='post_info'>
+  <div class='post_header'>
+    <h3>Post <%=@post.id%> by <%=@post.author.name%></h3>
+    <span class='comments_likes'>
+      <p>
+        Comments:
+        <%= @post.comments_counter %>
+      </p>
+      <p>
+        Likes:
+        <%= @post.likes_counter %>
+      </p>
+    </span>
+  </div>
+  <p>
+    <%= @post.body%>
+  </p>
+
+</div>
+<% if @post.comments.count > 0 %>
+  <div class='post_comments'>
     <% @post.comments.each do |comment| %>
-      <div class="post-comment">
-        <p>
-          <span><strong><%= comment.author.name %>:</strong></span>
-          <span><%= comment.text %></span>
-        </p>
-      </div>
+    <p class='post_comment'>
+      <%= comment.author.name%>:
+      <%= comment.body %>
+    </p>
     <% end %>
-  <div>
-</section>
+  </div>
+<% end %>
+<div class='space'>
+  <%= link_to 'Back', user_posts_path %>
+  <%= button_to "Like", user_post_likes_path(@post.author.id, post_id: @post.id), method: :post %>
+  <%= link_to 'create comment', new_user_post_comment_path(@post.author.id, @post.id) %>
+</div>

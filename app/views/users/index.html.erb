@@ -1,11 +1,17 @@
-<% content_for :title, "Blog App" %>
-<h1>Users#index</h1>
-<section class="main-container">
-    <% if @users.blank? %>
-        <p>There are not any users currently in the system.</p>
-    <% else %>
-        <% @users.each do |user| %>
-            <%= render "user", user: user %>
-        <% end %>
-        <% end %>
-</section
+<h1>This is the lists of all users in the application</h1>
+
+<% @users.each do |user|%>
+<%= link_to user_path(user.id) do %>
+  <div class='user'>
+    <img src="<%= user.photo%>" alt="<%=user.name%>" class='user_image'>
+    <div class='user_details'>
+      <h2>
+        <%= user.name%>
+      </h2>
+      <h4>
+        <%= user.posts_counter%>
+      </h4>
+    </div>
+  </div>
+  <%end%>
+<% end %>
