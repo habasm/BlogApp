@@ -1,43 +1,27 @@
-<h1>List of all Posts by a user</h1>
-<div>
-  <div class='user_info'>
-      <img src="<%= @user.photo%>" alt="<%= @user.name%>" class='user_image'>
-      <div class='user_details'>
+<% content_for :title, "#{@user.name}'s Posts" %>
+<h1>Posts#index</h1>
+<section class = "main-container">
+  <%= render "users/user", user: @user %>
+  <% @user.posts.each do | post | %>
+    <%= link_to user_post_path(@user, post) do %>
+      <section class = "post-comments">
+      <%= render "post", post: post %>
+      
+      <div class="user-post-comments">
         <h2>
-          <%= @user.name%>
+          <span>Comments for Post: </span>
+          <span class="green-text"><%="#{post.title}"%> </span>
         </h2>
-        <h4>
-          <%= @user.posts_counter%>
-        </h4>
-      </div>
-  </div>
-  <div class='posts'>
-      <% @posts.each do |post|%>
-          <div class='posts_comments'>
-            <%= link_to user_post_path(@user,post) do %>
-              <div class='post'>
-                <h4 class='post_title'>
-                  <%= post.title %>
-                </h4>
-                <p class='post_body'>
-                  <%= post.body %>
-                </p>
-              </div>
-            <% end %>
-            <% if post.latest_comments.count > 0 %>
-              <span class='post_comments_likes'>
-                  <% post.latest_comments.each do |comment| %>
-                    <p class='post_comment'>
-                      <%= comment.author.name%>:
-                      <%= comment.body %>
-                    </p>
-                  <% end %>
-              </span>
-            <% end %>
+        <% post.recent_five.each do |comment| %>
+          <div class="post-comment">
+            <p>
+              <span><strong><%= comment.author.name %>:</strong></span>
+              <span><%= comment.text %></span>
+            </p>
           </div>
-      <% end %>
-      <div class="flickr_pagination">
-        <%= will_paginate @posts, :container => false %>
+        <% end %>
       </div>
-  </div>
-</div>
+      </section>
+    <% end %>
+  <% end %>
+</section>
