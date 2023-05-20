@@ -1,19 +1,40 @@
-<% content_for :title, "#{@user.name}'s - Blog" %>
-<h1>Users#show</h1>
-<section class="main-container">
-  <%= render "user", user: @user %>
-  <div class="bio">
-    <h3>Bio<h3>
-    <p><%= @user.bio %></p>
-  </div>
+<h2>This is the details of the specific user you selected</h2>
 
-  <% @user.recent_three.each do |post| %>
-    <%= link_to user_post_path(@user, post) do %>
-      <%= render "posts/post", post: post %>
-    <% end %>
-  <% end %>
-  
-  <%= link_to user_posts_path(@user), class: 'button-center' do %>
-    <button type="button" class="see-all-posts">See all posts</button>
-  <% end %>
-</section>
+<div>
+   <%= render partial: 'layouts/user', locals: {user: @user}%>
+    <div class='user_bio'>
+      <%= @user.bio %>
+    </div>
+  <div class='space'>
+    <%= link_to 'Back', users_path(@user) %>
+    <%= link_to 'Create Post', new_user_post_path(@user) %>
+  </div>
+    <div class='posts'>
+      <% @user.recent_posts.each do |post|%>
+      <div class='post'>
+        <h4 class='post_title'>
+          <%= post.title %>
+        </h4>
+        <p class='post_body'>
+          <%= post.body %>
+        </p>
+        <span class='comments_likes'>
+           <p>
+            Comments:
+            <%= post.comments_counter %>
+          </p>
+           <p>
+            Likes:
+            <%= post.likes_counter %>
+          </p>
+        </span>
+      </div>
+      <% end %>
+      <div class='btn_container'>
+        <%= link_to [@user, :posts] do %>
+          <button class='all_posts_btn'>See all Posts</button>
+        <%end%>
+      </div>
+    </div>
+
+</div>
