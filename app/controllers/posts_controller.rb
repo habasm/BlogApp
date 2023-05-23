@@ -6,7 +6,7 @@ class PostsController < ApplicationController
   end
 
   def index
-    @posts = @user.posts.paginate(page: params[:page], per_page: 2)
+    @posts = @user.posts.includes(:comments).paginate(page: params[:page], per_page: 2)
   end
 
   def new; end
@@ -17,7 +17,7 @@ class PostsController < ApplicationController
     author = current_user
     @post = Post.new(title:, body:, author:)
     if @post.save
-      flash[:success] = 'Post created successfully.'
+      flash[:success] = 'Post created successfully'
       redirect_to user_post_path(@post.author, @post)
     else
       flash[:alert] = "Post couldn't be created"
