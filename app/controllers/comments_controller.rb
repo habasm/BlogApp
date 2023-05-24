@@ -1,44 +1,24 @@
 class CommentsController < ApplicationController
-  before_action :set_user, only: %i[index show]
-  before_action :set_post, only: %i[index show new create edit update destroy]
-
-  def new; end
-
-  def index
-    @comments = @post.comments.paginate(page: params[:page], per_page: 2)
-  end
-
-  def show
-    @comment = @post.comments.find(params[:id])
+  def new
+    @comment = Comment.new
   end
 
   def create
-    body = comment_params
-    @comment = Comment.new(body:, post: @post, author: current_user)
+    @comment = Comment.new(comment_params)
+    @post = Post.find(params[:post_id])
+    @comment.author_id = current_user.id
+    @comment.post_id = @post.id
+
     if @comment.save
-      flash[:success] = 'Comment created successfully'
-      redirect_to user_post_path(@post.author, @post)
+      redirect_to user_post_path(user_id: @post.author_id, id: @post.id)
     else
-      flash[:alert] = "Comment couldn't be created"
-      render 'new'
+      render :new, alert: 'Oops! An error has been occurred while creating the comment.'
     end
   end
 
-  def update; end
-
-  def destroy; end
-
   private
 
-  def set_user
-    @user = User.find(params[:user_id])
-  end
-
-  def set_post
-    @post = Post.find(params[:post_id])
-  end
-
   def comment_params
-    params.require(:body)
+    params.require(:comment).permit(:text)
   end
 end

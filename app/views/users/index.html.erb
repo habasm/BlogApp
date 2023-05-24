@@ -1,17 +1,15 @@
-<h1>This is the lists of all users in the application</h1>
-
-<% @users.each do |user|%>
-<%= link_to user_path(user.id) do %>
-  <div class='user'>
-    <img src="<%= user.photo%>" alt="<%=user.name%>" class='user_image'>
-    <div class='user_details'>
-      <h2>
-        <%= user.name%>
-      </h2>
-      <h4>
-        <%= user.posts_counter%>
-      </h4>
+<% @users.each do |user| %>
+    <div class='user-data'>
+        <div class="image-box">
+            <%= image_tag(user.photo, class: "user-image") %>
+        </div>
+        <div class='details-box'>
+            <p class='user-name'>
+                <%= link_to user.name, user_path(user) %>
+            </p>
+            <p class='no-of-posts'>
+                Number of posts: <%= user.posts_counter %>
+            </p>
+        </div>
     </div>
-  </div>
-  <%end%>
 <% end %>

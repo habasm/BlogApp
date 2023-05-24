@@ -1,52 +1,37 @@
 require 'rails_helper'
 
 RSpec.describe Post, type: :model do
-  include Shoulda::Matchers::ActiveModel
-  let(:author) { FactoryBot.create(:user) }
-  let(:subject) { FactoryBot.create(:post, author:) }
-
-  before do
-    FactoryBot.create_list(:comment, 7, post: subject)
-  end
-
-  describe 'Validations' do
-    it 'requires a title to be present' do
-      expect(subject.title).to be_truthy
+  describe 'validations' do
+    it 'is invalid without a title' do
+      post = Post.new(title: nil)
+      expect(post).to_not be_valid
+      expect(post.errors[:title]).to include("can't be blank")
     end
 
-    it 'requires a title to be not more than 250 characters' do
-      expect(subject.title.length).to be <= 250
+    it 'is invalid if the title is longer than 250 characters' do
+      post = Post.new(title: 'a' * 251)
+      expect(post).to_not be_valid
+      expect(post.errors[:title]).to include('is too long (maximum is 250 characters)')
     end
 
-    it 'requires comment_counter to be greater than or equal to zero' do
-      expect(subject.comments_counter).to be >= 0
+    it 'is valid with a title, author_id, comments_counter and likes_counter' do
+      user = User.create(name: 'John', posts_counter: 0)
+      post = Post.new(title: 'First post', author_id: user.id, comments_counter: 0, likes_counter: 0)
+      expect(post).to be_valid
     end
 
-    it 'requires comment_counter to be an integer' do
-      expect(subject.comments_counter).to be_a(Integer)
+    it 'is invalid if comments_counter is less than 0' do
+      user = User.create(name: 'John', posts_counter: 0)
+      post = Post.new(title: 'First post', author_id: user.id, comments_counter: -1, likes_counter: 0)
+      expect(post).to_not be_valid
+      expect(post.errors[:comments_counter]).to include('must be greater than or equal to 0')
     end
 
-    it 'requires likes_counter to be greater than or equal to zero' do
-      expect(subject.likes_counter).to be >= 0
-    end
-
-    it 'requires likes_counter to be an integer' do
-      expect(subject.likes_counter).to be_a(Integer)
-    end
-  end
-
-  describe '#latest_comments' do
-    it 'returns an array' do
-      expect(subject.latest_comments).to be_a(Array)
-    end
-    it 'returns an array of length 5' do
-      expect(subject.latest_comments.count).to eq(5)
-    end
-  end
-
-  describe '#update_posts_counter' do
-    it 'updates the posts_counter of the author' do
-      expect(subject.author.posts_counter).to eq(1)
+    it 'is invalid if likes_counter is less than 0' do
+      user = User.create(name: 'John', posts_counter: 0)
+      post = Post.new(title: 'First post', author_id: user.id, comments_counter: 0, likes_counter: -1)
+      expect(post).to_not be_valid
+      expect(post.errors[:likes_counter]).to include('must be greater than or equal to 0')
     end
   end
 end

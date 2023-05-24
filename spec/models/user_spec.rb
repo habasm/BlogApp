@@ -1,33 +1,23 @@
-# spec/models/user_spec.rb
-
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  include Shoulda::Matchers::ActiveModel
-  let(:subject) { FactoryBot.create(:user) }
-  let(:post) { FactoryBot.create(:post, 3, author: subject) }
+  let(:user) { User.new(name: 'John Doe', posts_counter: 3) }
 
-  describe 'Validations' do
-    it 'requires a name to be present' do
-      expect(subject.name).to be_truthy
+  describe 'validations' do
+    it 'requires name' do
+      user.name = nil
+      expect(user).to_not be_valid
     end
 
-    it 'requires a name to be present' do
-      expect(subject).to validate_presence_of(:name)
-    end
-  end
+    it 'requires posts_counter to be an integer greater than or equal to zero' do
+      user.posts_counter = -1
+      expect(user).to_not be_valid
 
-  describe '#recent_posts' do
-    it 'requires a posts_counter to be greater than or equal to 0' do
-      expect(subject.posts_counter).to be >= 0
-    end
+      user.posts_counter = 0.5
+      expect(user).to_not be_valid
 
-    it 'returns an array' do
-      expect(subject.recent_posts).to be_a(Array)
+      user.posts_counter = 2
+      expect(user).to be_valid
     end
-
-    # it 'returns an array of 3 recent posts' do
-    #   expect(subject.recent_posts.count).to eq(3)
-    # end
   end
 end

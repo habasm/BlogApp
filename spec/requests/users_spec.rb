@@ -1,38 +1,28 @@
 require 'rails_helper'
 
 RSpec.describe 'Users', type: :request do
-  it 'should render index' do
-    get '/'
-    expect(response).to render_template(:index)
-  end
-
-  describe 'GET /index' do
-    it 'returns http success' do
-      get '/users/index'
-      expect(response).to have_http_status(:success)
+  describe 'GET /users' do
+    it 'returns a successful response' do
+      get '/users'
+      expect(response).to have_http_status(200)
     end
 
-    it 'should include correct placeholder' do
-      get '/'
-      expect(response.body).to include("The list of all users can be found at '/' or 'users/'")
+    it 'renders the index template' do
+      get '/users'
+      expect(response).to render_template(:index)
     end
   end
 
-  describe 'GET /show' do
-    before :each do
-      get '/users/:id'
+  describe 'GET /users/:id' do
+    let!(:user) { User.create(name: 'Aleem', photo: 'https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80', bio: 'Teacher from Poland.', posts_counter: 0) }
+    before(:example) { get user_path(user) }
+
+    it 'returns a successful response' do
+      expect(response).to have_http_status(200)
     end
 
-    it 'returns http success' do
-      expect(response).to have_http_status(:success)
-    end
-
-    it 'should return show' do
+    it 'renders the show template' do
       expect(response).to render_template(:show)
-    end
-
-    it 'should include correct placeholder' do
-      expect(response.body).to include("An individual user whose id is in the url. You are at '/user/:id'")
     end
   end
 end

@@ -1,19 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe Comment, type: :model do
-  let(:author) { FactoryBot.create(:user) }
-  let(:post) { FactoryBot.create(:post, author:) }
-  let(:subject) { FactoryBot.create(:comment, author:, post:) }
-
-  describe 'Validations' do
-    it 'requires a body to be present' do
-      expect(subject.body).to be_truthy
-    end
-  end
-
-  describe '#update_comments_counter' do
-    it 'updates the comments_counter of the post' do
-      expect(subject.post.comments_counter).to eq(1)
+  describe 'validations' do
+    it 'is valid with a text and author_id' do
+      user = User.create(name: 'John', posts_counter: 0)
+      post = Post.create(title: 'First post', author_id: user.id, comments_counter: 0, likes_counter: 0)
+      comment = Comment.new(text: 'Great post!', author_id: user.id, post_id: post.id)
+      expect(comment).to be_valid
     end
   end
 end

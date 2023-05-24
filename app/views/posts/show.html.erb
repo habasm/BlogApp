@@ -1,35 +1,40 @@
-<h2>Details of post for a given ID</h2>
-<div class='post_info'>
-  <div class='post_header'>
-    <h3><%= @post.title %> by <%=@post.author.name%></h3>
-    <span class='comments_likes'>
-      <p>
-        Comments:
-        <%= @post.comments_counter %>
-      </p>
-      <p>
-        Likes:
-        <%= @post.likes_counter %>
-      </p>
-    </span>
-  </div>
-  <p>
-    <%= @post.body%>
-  </p>
-
-</div>
-<% if @post.comments.count > 0 %>
-  <div class='post_comments'>
-    <% @post.comments.each do |comment| %>
-    <p class='post_comment'>
-      <%= comment.author.name%>:
-      <%= comment.body %>
+<div class='post-data'>
+    <div class='post-header'>
+        <p class='post-title'>
+            <%= @post.title %> by <%= @post.author.name %>
+        </p>
+        <p class='comments-and-likes base'>
+            Comment(s): <%= @post.comments_counter %>, Like(s): <%= @post.likes_counter %>
+        </p>
+    </div>
+    <p>
+        <%= @post.text %>
     </p>
+</div>
+
+<div class='comments-section'>
+    <% if @post.comments.blank? %>
+        <p>No comments!</p>
+    <% else %>
+
+    <% @post.comments.includes(:author).each do |comment| %>
+        <p>
+            <strong><%= comment.author.name %>:</strong> <%= comment.text %>
+        </p>
     <% end %>
-  </div>
-<% end %>
-<div class='space'>
-  <%= link_to 'Back', user_posts_path %>
-  <%= button_to "Like", user_post_likes_path(@post.author.id, post_id: @post.id), method: :post %>
-  <%= link_to 'create comment', new_user_post_comment_path(@post.author.id, @post.id) %>
+    <% end %>
+</div>
+
+<div class='like-comment'>
+
+    <%# add comment %>
+
+    <%= link_to "Add a comment", new_user_post_comment_path(user_id: @post.author_id, post_id: @post.id), class: "add-comment-btn" %>
+
+    <%# like %>
+
+    <%= form_with model: @like, url: user_post_likes_path(post_id: @post.id) do |f| %>
+        <%= f.submit "Like" %>
+    <% end %>
+
 </div>

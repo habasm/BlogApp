@@ -1,33 +1,32 @@
 class PostsController < ApplicationController
-  before_action :set_user, only: %i[index show]
+  def index
+    @user = User.find(params[:user_id])
+    @posts = @user.posts
+  end
 
   def show
-    @post = @user.posts.find(params[:id])
+    @post = Post.find(params[:id])
   end
 
-  def index
-    @posts = @user.posts.includes(:comments).paginate(page: params[:page], per_page: 2)
+  def new
+    @post = Post.new
   end
-
-  def new; end
 
   def create
-    title = params[:title]
-    body = params[:body]
-    author = current_user
-    @post = Post.new(title:, body:, author:)
+    @post = Post.new(post_params)
+    @post.author = current_user
     if @post.save
-      flash[:success] = 'Post created successfully'
-      redirect_to user_post_path(@post.author, @post)
+      flash[:success] = 'The post created successfully!'
+      redirect_to user_post_url(current_user, @post)
     else
-      flash[:alert] = "Post couldn't be created"
-      render 'new'
+      flash[:error] = 'Opps! Something went wrong, please try again.'
+      redirect_to new_user_post_url(current_user)
     end
   end
 
   private
 
-  def set_user
-    @user = User.find(params[:user_id])
+  def post_params
+    params.require(:post).permit(:title, :text)
   end
 end
