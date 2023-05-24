@@ -1,14 +1,29 @@
-<section id='form'>
-    <%= form_with model: @post, url: user_posts_path do |form| %>
-        <div class='add-post-form'>
-            <%= form.label :title %>
-            <%= form.text_field :title, required: true %>
+<div class="container">
+    <h2 class="fs-5 fw-bold">Create a Post</h2>
+    <%= form_with model: @post, class: "form" do |form| %>
 
-            <%= form.label :text %>
-            <%= form.text_area :text, cols: 30, rows: 10, required: true %>
-
-            <%= form.submit "Create Post" %>
-        <div>
+    <% flash.each do |name, msg| %>
+        <div class="alert alert-danger">
+            <%= msg %>
+        </div>
     <% end %>
-</section>
 
+
+    <div class="form-section">
+        <p class="form-label"><%= form.label :title %>:</p>
+        <%= form.text_field :title,
+        class: "form-control",
+        placeholder: "Write your title..." %>
+    </div>
+    <div class="form-section">
+        <p class="form-label"><%= form.label :text %>:</p>
+        <%= form.text_area :text,
+        class: "form-control",
+        placeholder: "Write your post text..." %>
+    </div>
+    <div class="form-section mt-4">
+        <%= form.submit class: "btn btn-success me-4" %>
+        <%= link_to "Return", "/users", class: "btn btn-success" %>
+    </div>
+    <% end %>
+</div>

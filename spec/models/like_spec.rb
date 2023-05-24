@@ -2,18 +2,17 @@ require 'rails_helper'
 
 RSpec.describe Like, type: :model do
   before :each do
-    @user = User.create(name: 'Tom', photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'Teacher')
-    @post = Post.create(author: @user, title: 'Hello', text: 'This is my first post')
-    @like = Like.new(post_id: @post.id, author_id: @user.id)
+    @user = User.create(name: 'Tom', photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'Teacher', post_counter: 1)
+    @post = Post.create(title: 'Hi', text: 'My world', comment_counter: 0, like_counter: 1, author_id: @user)
   end
 
-  it 'post id must be integer' do
-    @like.post_id = 1.5
+  it 'checks validity of like present' do
+    @like = Like.new(author_id: @user, posts_id: @post)
     expect(@like).to_not be_valid
   end
 
-  it 'author id must be integer' do
-    @like.author_id = 1.5
-    expect(@like).to_not be_valid
+  it 'checks likes counter' do
+    Like.create(author_id: @user, posts_id: @post)
+    expect(@post.like_counter).to eq 1
   end
 end

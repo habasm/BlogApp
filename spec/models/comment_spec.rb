@@ -1,12 +1,17 @@
 require 'rails_helper'
 
-RSpec.describe Comment, type: :model do
-  describe 'validations' do
-    it 'is valid with a text and author_id' do
-      user = User.create(name: 'John', posts_counter: 0)
-      post = Post.create(title: 'First post', author_id: user.id, comments_counter: 0, likes_counter: 0)
-      comment = Comment.new(text: 'Great post!', author_id: user.id, post_id: post.id)
-      expect(comment).to be_valid
-    end
+RSpec.describe User, type: :model do
+  before :each do
+    @user = User.new(name: 'Tom', photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'Teacher', post_counter: 0)
+    @post = Post.new(title: 'Hi', text: 'My world', comment_counter: 0, like_counter: 0, author_id: 1)
+    @comment = Comment.new(post: @post, text: 'hello yimi', author_id: @user)
+  end
+
+  it 'checks if attributes are valid' do
+    expect(@user).to be_valid
+  end
+
+  it 'checks if attributes are valid' do
+    expect(@post).to_not be_valid
   end
 end

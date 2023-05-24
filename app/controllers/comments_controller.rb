@@ -1,24 +1,28 @@
 class CommentsController < ApplicationController
-  def new
-    @comment = Comment.new
-  end
-
   def create
-    @comment = Comment.new(comment_params)
-    @post = Post.find(params[:post_id])
-    @comment.author_id = current_user.id
-    @comment.post_id = @post.id
-
+    @user = current_user
+    @user_post = User.find(params[:user_id])
+    @comment = @user.comments.new(comments_params)
+    @comment.author_id = @user.id
+    @comment.post_id = params[:post_id]
     if @comment.save
-      redirect_to user_post_path(user_id: @post.author_id, id: @post.id)
+      flash[:notice] = 'Comment published succesfully'
+      redirect_to user_post_path(@user_post.id, Post.find(params[:post_id]))
     else
-      render :new, alert: 'Oops! An error has been occurred while creating the comment.'
+      flash[:error] = 'Comment was not published'
+      render :new
     end
   end
 
-  private
+  def destroy
+    @user_post = User.find(params[:user_id])
+    @post = Post.find(params[:post_id])
+    @comment = @post.comments.find(params[:id])
+    @comment.destroy
+    redirect_to user_post_path(@user_post.id, @post)
+  end
 
-  def comment_params
+  def comments_params
     params.require(:comment).permit(:text)
   end
 end
