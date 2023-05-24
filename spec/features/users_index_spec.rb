@@ -39,6 +39,13 @@ RSpec.feature 'Users', type: :feature do
       sleep(5)
       expect(current_path).to eq(user_path(@user1.id))
     end
+
+    scenario 'When i click on a user bio, I am taken to that user\'s profile page' do
+      visit root_path
+      click_link @user1.bio
+      sleep(5)
+      expect(current_path).to eq(user_path(@user1.id))
+    end
   end
 
   describe 'User show page' do
