@@ -1,46 +1,37 @@
 require 'rails_helper'
-require 'faker'
 
 RSpec.describe Post, type: :model do
-  before :each do
-    @user = User.create(name: 'Alex', photo: 'Photo', bio: 'I am a Front-end developer')
-    @post = @user.posts.new(title: 'I am a title', text: 'I am a text')
-    @post.author_id = @user.id
-    @post.save
-  end
-
-  it 'title should be present' do
-    @post.title = nil
-    expect(@post).to_not be_valid
-  end
-
-  it 'title should not be greater than 250 characters' do
-    @post.title = Faker::Lorem.characters(number: 300)
-    expect(@post).to_not be_valid
-  end
-
-  it 'commentsCounter should be a integer greater or equal to 0' do
-    @post.comment_counter = nil
-    expect(@post).to_not be_valid
-  end
-
-  it 'likesCounter should be a integer greater or equal to 0' do
-    @post.like_counter = nil
-    expect(@post).to_not be_valid
-  end
-
-  it 'recentComments should be return 5 comments' do
-    (1..8).each do |_id|
-      Comment.create(
-        author_id: 1,
-        post_id: @post.id,
-        text: 'This is a comment'
-      )
+  describe 'validations' do
+    it 'is invalid without a title' do
+      post = Post.new(title: nil)
+      expect(post).to_not be_valid
+      expect(post.errors[:title]).to include("can't be blank")
     end
-    expect(@post.recent_comments.length).to be(0)
-  end
 
-  it 'PostsCounter should return 1 post' do
-    expect(@user.posts.length).to be(1)
+    it 'is invalid if the title is longer than 250 characters' do
+      post = Post.new(title: 'a' * 251)
+      expect(post).to_not be_valid
+      expect(post.errors[:title]).to include('is too long (maximum is 250 characters)')
+    end
+
+    it 'is valid with a title, author_id, comments_counter and likes_counter' do
+      user = User.create(name: 'John', posts_counter: 0)
+      post = Post.new(title: 'First post', author_id: user.id, comments_counter: 0, likes_counter: 0)
+      expect(post).to be_valid
+    end
+
+    it 'is invalid if comments_counter is less than 0' do
+      user = User.create(name: 'John', posts_counter: 0)
+      post = Post.new(title: 'First post', author_id: user.id, comments_counter: -1, likes_counter: 0)
+      expect(post).to_not be_valid
+      expect(post.errors[:comments_counter]).to include('must be greater than or equal to 0')
+    end
+
+    it 'is invalid if likes_counter is less than 0' do
+      user = User.create(name: 'John', posts_counter: 0)
+      post = Post.new(title: 'First post', author_id: user.id, comments_counter: 0, likes_counter: -1)
+      expect(post).to_not be_valid
+      expect(post.errors[:likes_counter]).to include('must be greater than or equal to 0')
+    end
   end
 end

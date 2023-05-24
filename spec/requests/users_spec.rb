@@ -1,33 +1,28 @@
 require 'rails_helper'
 
-RSpec.describe 'Posts', type: :request do
-  describe 'GET /index' do
-    before { get '/users/2/posts' }
-    it 'receive a ok status' do
-      expect(response).to have_http_status(:ok)
+RSpec.describe 'Users', type: :request do
+  describe 'GET /users' do
+    it 'returns a successful response' do
+      get '/users'
+      expect(response).to have_http_status(200)
     end
 
-    it 'A correct template was rendered.' do
+    it 'renders the index template' do
+      get '/users'
       expect(response).to render_template(:index)
-    end
-
-    it 'the response body includes correct placeholder text.' do
-      expect(response.body).to include('This page show all posts for a User')
     end
   end
 
-  describe 'GET /show' do
-    before { get '/users/2/posts/45' }
-    it 'receive a ok status' do
-      expect(response).to have_http_status(:ok)
+  describe 'GET /users/:id' do
+    let!(:user) { User.create(name: 'Aleem', photo: 'https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80', bio: 'Teacher from Poland.', posts_counter: 0) }
+    before(:example) { get user_path(user) }
+
+    it 'returns a successful response' do
+      expect(response).to have_http_status(200)
     end
 
-    it 'A correct template was rendered.' do
+    it 'renders the show template' do
       expect(response).to render_template(:show)
-    end
-
-    it 'the response body includes correct placeholder text.' do
-      expect(response.body).to include('This page shows a post for a certain user')
     end
   end
 end

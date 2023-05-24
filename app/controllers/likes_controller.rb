@@ -1,18 +1,16 @@
 class LikesController < ApplicationController
-  def create
-    @user = current_user
-    @post = Post.find(params[:post_id])
-    if already_liked?
-      redirect_to user_post_path(User.find(params[:user_id]), @post)
-    else
-      @like = @user.likes.new
-      @like.author_id = @user.id
-      @like.post_id = params[:post_id]
-      redirect_to user_post_path(User.find(params[:user_id]), @post) if @like.save
-    end
+  def new
+    @like = Like.new
   end
 
-  def already_liked?
-    Like.where(author_id: @user.id, post_id: @post.id).exists?
+  def create
+    @post = Post.find(params[:post_id])
+    @like = Like.new(author_id: current_user.id, post_id: @post.id)
+
+    if @like.save
+      redirect_to user_post_path(user_id: @post.author_id, id: @post.id)
+    else
+      render :new, alert: 'Oops! An error has been occurred while creating the like.'
+    end
   end
 end
