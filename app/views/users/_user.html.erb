@@ -1,16 +1,20 @@
-<%= link_to user_path(user) do %>
-    <li class="user">
-      <div class="user-image">
-        <%= image_tag user.photo, alt: "#{user.name}-avatar", class: 'w-36 h-36 object-cover object-center rounded-[50%]' %>
-      </div>
-      <div class="user-info">
-        <h2 class="username"><%= user.name %></h2>
-        <span class="count">Number of posts: <% if (user.posts_count == nil) %>
-        <%= 0 %>
-        <% else %>
-        <%= user.posts_count %>
+
+<article class="user-card">
+    <%= link_to user, class: 'user_link_container' do %>
+    <div class="photo-container">
+        <%= image_tag('cartoon_1.png', :alt => "parrot logo", :class => "img_profile") %>
+    </div>
+    <% end %>
+    <div class="user-container">
+        <%= link_to user, class: 'user_link_container', id: 'us-profile' do %>
+        <h2 class="user-name fs-5 fw-bold"><%= user.name %></h2>
         <% end %>
-        </span>
-      </div>
-    </li>
-  <% end %>
+        <div class="d-flex flex-column align-items-end">
+            <p class="fs-6 fw-bold text-secondary m-0">Posts</p>
+            <p class="fs-3 fw-bold mb-2"><%= user.post_counter %></p>
+            <%= link_to "See profile", user, class: "btn btn-success see" %>
+        </div>
+        
+    </div>
+</article>
+

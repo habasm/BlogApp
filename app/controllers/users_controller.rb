@@ -1,10 +1,15 @@
 class UsersController < ApplicationController
   def index
     @users = User.all
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render json: @users }
+    end
   end
 
   def show
     @user = User.find(params[:id])
-    puts @user.recent_posts.inspect
+    @list_of_posts = @user.recent_posts
   end
 end

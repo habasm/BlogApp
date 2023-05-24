@@ -1,33 +1,36 @@
-# spec/models/user_spec.rb
-
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  include Shoulda::Matchers::ActiveModel
-  let(:subject) { FactoryBot.create(:user) }
-  let(:post) { FactoryBot.create(:post, 3, author: subject) }
-
-  describe 'Validations' do
-    it 'requires a name to be present' do
-      expect(subject.name).to be_truthy
-    end
-
-    it 'requires a name to be present' do
-      expect(subject).to validate_presence_of(:name)
-    end
+  before :each do
+    @user = User.new(name: 'Tom', photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'Teacher', post_counter: 1)
   end
 
-  describe '#recent_posts' do
-    it 'requires a posts_counter to be greater than or equal to 0' do
-      expect(subject.posts_counter).to be >= 0
+  it 'name must not be blank' do
+    @user.name = nil
+    expect(@user).to_not be_valid
+  end
+
+  it 'check if posts counter is an integer' do
+    @user.post_counter = 'ham'
+    expect(@user).to_not be_valid
+  end
+
+  it 'checks if bio is present' do
+    @user.bio = 'hello'
+    expect(@user).to be_valid
+  end
+
+  describe 'check methods' do
+    before do
+      @user1 = User.create(name: 'Tom', photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'Teacher',
+                           post_counter: 0)
+      5.times do
+        Post.create(title: 'Hi', text: 'My world', like_counter: 0, author_id: 1)
+      end
     end
 
-    it 'returns an array' do
-      expect(subject.recent_posts).to be_a(Array)
+    it 'returns last three posts' do
+      expect(@user1.recent_posts).to match_array(@user1.posts.last(3))
     end
-
-    # it 'returns an array of 3 recent posts' do
-    #   expect(subject.recent_posts.count).to eq(3)
-    # end
   end
 end

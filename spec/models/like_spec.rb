@@ -1,23 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe Like, type: :model do
-  let(:author) { FactoryBot.create(:user) }
-  let(:post) { FactoryBot.create(:post, author:) }
-  let(:subject) { FactoryBot.create(:like, author:, post:) }
-
-  describe 'Validations' do
-    it 'requires a user to be present' do
-      expect(subject.author).to be_truthy
-    end
-
-    it 'requires a post to be present' do
-      expect(subject.post).to be_truthy
-    end
+  before :each do
+    @user = User.create(name: 'Tom', photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'Teacher', post_counter: 1)
+    @post = Post.create(title: 'Hi', text: 'My world', comment_counter: 0, like_counter: 1, author_id: @user)
   end
 
-  describe '#update_likes_counter' do
-    it 'updates the likes_counter of the post' do
-      expect(subject.post.likes_counter).to eq(1)
-    end
+  it 'checks validity of like present' do
+    @like = Like.new(author_id: @user, posts_id: @post)
+    expect(@like).to_not be_valid
+  end
+
+  it 'checks likes counter' do
+    Like.create(author_id: @user, posts_id: @post)
+    expect(@post.like_counter).to eq 1
   end
 end

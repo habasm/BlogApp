@@ -1,40 +1,8 @@
-<h2>This is the details of the specific user you selected</h2>
+<div class="container">
+    <%= render "users/theuser" %>
 
-<div>
-   <%= render partial: 'layouts/user', locals: {user: @user}%>
-    <div class='user_bio'>
-      <%= @user.bio %>
+    <%= render "users/listpost" %>
+    <div class="btn-container mt-4">
+        <%= link_to "See all posts", "#{@user.id}/posts", class: "btn btn-success mb-4" %>
     </div>
-  <div class='space'>
-    <%= link_to 'Back', users_path(@user) %>
-    <%= link_to 'Create Post', new_user_post_path(@user) %>
-  </div>
-    <div class='posts'>
-      <% @user.recent_posts.each do |post|%>
-      <div class='post'>
-        <h4 class='post_title'>
-          <%= post.title %>
-        </h4>
-        <p class='post_body'>
-          <%= post.body %>
-        </p>
-        <span class='comments_likes'>
-           <p>
-            Comments:
-            <%= post.comments_counter %>
-          </p>
-           <p>
-            Likes:
-            <%= post.likes_counter %>
-          </p>
-        </span>
-      </div>
-      <% end %>
-      <div class='btn_container'>
-        <%= link_to [@user, :posts] do %>
-          <button class='all_posts_btn'>See all Posts</button>
-        <%end%>
-      </div>
-    </div>
-
 </div>

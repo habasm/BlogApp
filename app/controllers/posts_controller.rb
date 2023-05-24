@@ -1,33 +1,45 @@
 class PostsController < ApplicationController
-  before_action :set_user, only: %i[index show]
-
-  def show
-    @post = @user.posts.find(params[:id])
-  end
+  before_action :authenticate_user!, only: %i[new create delete]
 
   def index
-    @posts = @user.posts.paginate(page: params[:page], per_page: 2)
+    @user = User.find(params[:user_id])
+    @post = @user.posts.includes(:comments)
   end
 
-  def new; end
+  def show
+    @user = User.find(params[:user_id])
+    @post = Post.find(params[:id])
+    @comment = Comment.new
+  end
+
+  def new
+    @post = Post.new
+  end
 
   def create
-    title = params[:title]
-    body = params[:body]
-    author = current_user
-    @post = Post.new(title:, body:, author:)
+    @user = current_user
+    @post = @user.posts.new(posts_params)
+    @post.author_id = @user.id
     if @post.save
-      flash[:success] = 'Post created successfully.'
-      redirect_to user_post_path(@post.author, @post)
+      flash[:notice] = 'Post published succesfully'
+      redirect_to user_post_path(@user.id, @post)
     else
-      flash[:alert] = "Post couldn't be created"
-      render 'new'
+      flash[:error] = @post.errors.full_messages[0]
+      redirect_to new_post_path
     end
   end
 
-  private
+  def destroy
+    @user = current_user
+    @user_post = User.find(params[:user_id])
+    @post = Post.find(params[:id])
+    @post.destroy
+    @user_post.decrement(:post_counter)
+    @user_post.save
+    redirect_to user_posts_path(@user_post.id)
+  end
 
-  def set_user
-    @user = User.find(params[:user_id])
+  def posts_params
+    params.require(:post).permit(:title, :text)
   end
 end
