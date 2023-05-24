@@ -31,10 +31,14 @@ RSpec.describe 'User Show', type: :feature do
     expect(page).to have_content 'Teacher from US.'
   end
 
-  it 'I can see the users first 3 posts' do
+  it 'I can see the users recent 3 posts' do
     expect(page).to have_content(@forth_post.title)
     expect(page).to have_content(@third_post.title)
     expect(page).to have_content(@second_post.title)
+  end
+
+  it 'I can see the post text' do
+    expect(page).to have_content(@forth_post.text)
   end
 
   it 'I can see a button that lets me view all of a users posts' do
