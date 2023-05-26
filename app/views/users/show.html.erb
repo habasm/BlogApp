@@ -1,42 +1,25 @@
-<div class='user-data'>
-    <div class="image-box">
-        <%= image_tag(@user.photo, class: "user-image") %>
+<section class="indent">
+    <div class="user-info">
+        <img class="user-img" src=<%= @user.photo %>>
+        <div class="bordered user">
+            <span class="user-name"><%= @user.name %></span>
+            <span class="user-offset">Number of posts: <%= @user.posts_counter %></span>
+        </div>
     </div>
-    <div class='details-box'>
-        <p class='user-name'>
-            <%= @user.name %>
-        </p>
-        <p class='no-of-posts'>
-            Number of posts: <%= @user.posts_counter %>
-        </p>
+    <div class="bordered">
+        bio:<br><br>
+        <%= @user.bio %><br><br>
     </div>
-</div>
-
-<%# user bio %>
-
-<div class='user-bio'>
-    <p class='bio-title'>Bio</p>
-    <p class='bio-details'>
-        <%= @user.bio %>
-    </p>
-</div>
-
-<%# user posts %>
-
-<% @user.recent_post.each do |post| %>
-<div class='user-posts'>
-    <p class='post-title'>
-        <%= link_to post.title, user_post_path(post.author, post) %>
-    </p>
-    <p class='post-details'>
-        <%= post.text %>
-    </p>
-    <p class='comments-and-likes'>Comment(s): <%= post.comments_counter %>, Like(s): <%= post.likes_counter %></p>
-</div>
-<% end %>
-
-<div class='posts-button'>
-    <button class='view-posts-button'>
-        <%= link_to "See all posts", user_posts_path(@user) %>
+    <% @user.first_three.each do |post| %>
+        <a class="link" href=<%= user_post_path(@user, post) %>>
+            <div class="bordered post-info">
+                Post <%= post.id %>:<%= post.title %><br><br>
+                <%= truncate(post.text, length: 50, separator: ' ') %><br>
+                <span class="offset-left">Comments: <%= post.comments_counter %>, Likes: <%= post.likes_counter %></span>
+            </div>
+        </a>
+    <% end %>
+    <button class="to-posts-btn">
+        <%= link_to 'See all posts', user_posts_path(@user), style: 'color: black; text-decoration: none;' %>
     </button>
-</div>
+</section>

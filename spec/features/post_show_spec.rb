@@ -1,41 +1,31 @@
 require 'rails_helper'
 
-RSpec.describe 'Post Show', type: :feature do
+describe 'Post show page', type: :feature do
   before :each do
-    @user = User.create(name: 'Lilly', photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'Teacher from US.',
-                        posts_counter: 0)
-    @first_post = Post.create(author_id: @user.id, title: 'First Post', text: 'This is my first post.',
-                              comments_counter: 0, likes_counter: 0)
-    @comment = Comment.create(post_id: @first_post.id, author_id: @user.id, text: 'This is my first comment')
-    @like = Like.create(post_id: @first_post.id, author_id: @user.id)
-    visit user_post_path(@user, @first_post)
+    @user = User.create(name: 'Neo', photo: 'neo.jpg', bio: 'The One')
+    @post = Post.create(author: @user, title: 'Awakening', text: 'I choose the red pill')
+    @comment = Comment.create(author: @user, post: @post, text: 'Time to unplug')
+    visit user_post_path(@user, @post)
+  end
+  it 'shows the title of the post' do
+    expect(page).to have_content(@post.title)
   end
 
-  it 'I can see the posts title' do
-    expect(page).to have_content 'First Post'
+  it 'shows the author of the post' do
+    expect(page).to have_content(@post.author.name)
   end
 
-  it 'I can see who wrote the post' do
-    expect(page).to have_content 'Lilly'
+  it 'shows the number of comments and likes for the post' do
+    expect(page).to have_content(@post.comments_counter)
+    expect(page).to have_content(@post.likes_counter)
   end
 
-  it 'I can see how many comments it has' do
-    expect(page).to have_content('Comment(s): 1')
+  it 'shows the body of the post' do
+    expect(page).to have_content(@post.text)
   end
 
-  it 'I can see how many likes it has' do
-    expect(page).to have_content('Like(s): 1')
-  end
-
-  it 'I can see the post body' do
-    expect(page).to have_content 'This is my first post.'
-  end
-
-  it 'I can see the username of each commentor' do
+  it 'shows the username of a commenter and their comment' do
     expect(page).to have_content(@comment.author.name)
-  end
-
-  it 'I can see the comment each commentor left' do
-    expect(page).to have_content 'This is my first comment'
+    expect(page).to have_content(@comment.text)
   end
 end

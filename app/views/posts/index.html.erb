@@ -1,53 +1,31 @@
-<div class='user-data'>
-    <div class="image-box">
-        <%= image_tag(@user.photo, class: "user-image") %>
+<section class="indent">
+    <div class="user-info">
+        <img class="user-img" src=<%= @user.photo %>>
+        <div class="bordered user">
+            <span class="user-name"><%= @user.name %></span>
+            <span class="user-offset">Number of posts: <%= @user.posts_counter %></span>
+        </div>
     </div>
-    <div class='details-box'>
-        <p class='user-name'>
-            <%= @user.name %>
-        </p>
-        <p class='no-of-posts'>
-            Number of posts: <%= @user.posts_counter %>
-        </p>
-    </div>
-</div>
-
-<%# user posts %>
-
-<% @posts.includes(:comments, :author).each do |post| %>
-<div class='user-posts'>
-    <p class='post-title'>
-        <%= link_to post.title, user_post_path(post.author, post) %>
-    </p>
-    <p class='post-details'>
-        <%= post.text %>
-    </p>
-    <p class='comments-and-likes'>Comment(s): <%= post.comments_counter %>, Like(s): <%= post.likes_counter %></p>
-</div>
-
-<%# post comments %>
-
-<div class='comments-section'>
-
-    <% if post.recent_comments.blank? %>
-        <p>No comments!</p>
-    <% else %>
-
-    <% post.recent_comments.includes(:author).each do |comment| %>
-        <p>
-            <strong><%= comment.author.name %>:</strong> <%= comment.text %>
-        </p>
-    <% end %>
-    <% end %>
-
-</div>
-
-<% end %>
-
-<%# pagination button %>
-
-<div class='pagination'>
-    <button class='pagination-button'>
-        Pagination
+    <div class="page-description">
+    <h3> List of previous Posts:</h3>
+    <button class="page-btn">
+        <%= link_to 'Create New Post', new_user_post_path(@user), style: 'color: black; text-decoration: none;' %>
     </button>
-</div>
+    </div>
+    <% @posts.each do |post| %>
+        <a class="link" href=<%= user_post_path(@user, post) %>>
+            <section class="bordered post-info">
+                Post <%= post.id %>: <%= post.title%><br><br>
+                <%= truncate(post.text, length: 50, separator: ' ') %><br><br>
+                <span class="offset-left">Comments: <%= post.comments_counter %>, Likes: <%= post.likes_counter %></span>
+                <hr class="separator">
+                <ul class="list">
+                    <% post.recent_five.includes(:author).each do |comment| %>
+                        <li> <%= comment.author.name %>: <%= comment.text %> </li>
+                    <% end %>
+                </ul>
+            </section>
+        </a>
+    <% end %>
+    <%= paginate @posts %>
+</section>

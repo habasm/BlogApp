@@ -30,5 +30,8 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
-# Ignore node_modules
-node_modules
+#Ignore node_modules
+node_modules/
+
+#personal notes
+notes.txt

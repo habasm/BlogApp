@@ -14,7 +14,7 @@ Devise.setup do |config|
   # confirmation, reset password and unlock tokens in the database.
   # Devise will use the `secret_key_base` as its `secret_key`
   # by default. You can change it below and use your own secret key.
-  # config.secret_key = '48d77e4e0612bd3256fc3b868f02962c78372ac7c65303891fbc40cdb3fcbba91363a01734874d59bf0489bb0d59ab4654a70d59becf3667a30d53e1cea6d9d1'
+  # config.secret_key = '78bc47e7b194f654ca866550307691aecec5028020d74e8472d7d28def8f991b4d78b11f6d9c7c4230eaebc85fc375fabfc75e29a54aaae514b12beaabb320c7'
 
   # ==> Controller configuration
   # Configure the parent class to the devise controllers.
@@ -126,7 +126,7 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 12
 
   # Set up a pepper to generate the hashed password.
-  # config.pepper = '45c9a3f1e762a9a0477208c613f7e9622bec969224088311cc8c6fa1cbb7bda036e6ee9ba82820976d68a3c18b9ffa1c9634e4b6b685f0c297d350846f0b2ee3'
+  # config.pepper = '38d2fb6a8bca9fde9f8fa047c189bcf3a520e99f1f45fd0744fa5a74d08bb1402b070744b11813d51161b59c60186eff9018c23c91719e9575dabfa5aefc008b'
 
   # Send a notification to the original email when the user's email is changed.
   # config.send_email_changed_notification = false
@@ -143,7 +143,7 @@ Devise.setup do |config|
   # without confirming their account.
   # Default is 0.days, meaning the user cannot access the website without
   # confirming their account.
-  # config.allow_unconfirmed_access_for = 2.days
+  config.allow_unconfirmed_access_for = 1.days
 
   # A period that the user is allowed to confirm their account before their
   # token becomes invalid. For example, if set to 3.days, the user can confirm
@@ -224,7 +224,7 @@ Devise.setup do |config|
   # Time interval you can reset your password with a reset password key.
   # Don't put a too small interval or your users won't have the time to
   # change their passwords.
-  config.reset_password_within = 6.hours
+  # config.reset_password_within = 6.hours
 
   # When set to false, does not sign a user in automatically after their password is
   # reset. Defaults to true, so a user is signed in automatically after a reset.

@@ -1,53 +1,54 @@
 require 'rails_helper'
 
-RSpec.describe 'User Show', type: :feature do
+describe 'User show page', type: :feature do
   before :each do
-    @user = User.create(name: 'Lilly', photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'Teacher from US.',
-                        posts_counter: 0)
-    @first_post = Post.create(author_id: @user.id, title: 'First Post', text: 'This is my first post.',
-                              comments_counter: 0, likes_counter: 0)
-    @second_post = Post.create(author_id: @user.id, title: 'Second Post', text: 'This is my second post.',
-                               comments_counter: 0, likes_counter: 0)
-    @third_post = Post.create(author_id: @user.id, title: 'Third Post', text: 'This is my third post.',
-                              comments_counter: 0, likes_counter: 0)
-    @forth_post = Post.create(author_id: @user.id, title: 'Forth Post', text: 'This is my forth post.',
-                              comments_counter: 0, likes_counter: 0)
-    visit user_path @user.id
+    @user = User.create(name: 'Neo', photo: 'neo.jpg', bio: 'The One')
+    @post = Post.create(author: @user, title: 'Awakening', text: 'I choose the red pill')
+    @post_two = Post.create(author: @user, title: 'Training', text: 'I know kung fu')
+    @post_three = Post.create(author: @user, title: 'The Oracle', text: 'There is no spoon')
+    @post_four = Post.create(author: @user, title: 'Choice', text: 'I believe I can save Morpheus')
+    visit user_path(@user)
   end
 
-  it 'I can see the users profile picture' do
-    expect(page).to have_css("img[src*='https://unsplash.com/photos/F_-0BxGuVvo']")
+  it 'shows user profile picture' do
+    expect(page).to have_css("img[src='#{@user.photo}']")
   end
 
-  it 'I can see the users username' do
-    expect(page).to have_content('Lilly')
+  it 'shows username of user' do
+    expect(page).to have_content(@user.name)
   end
 
-  it 'I can see the number of posts the user has written' do
+  it 'shows the the number of posts a user has written' do
     expect(page).to have_content(@user.posts_counter)
   end
 
-  it 'I can see the users bio' do
-    expect(page).to have_content 'Teacher from US.'
+  it 'shows the bio of user' do
+    expect(page).to have_content(@user.bio)
   end
 
-  it 'I can see the users first 3 posts' do
-    expect(page).to have_content(@forth_post.title)
-    expect(page).to have_content(@third_post.title)
-    expect(page).to have_content(@second_post.title)
+  it 'shows the first three posts of the user' do
+    expect(page).to have_content(@post.title)
+    expect(page).to have_content(@post_two.title)
+    expect(page).to have_content(@post_three.title)
+    expect(page).not_to have_content(@post_four.title)
   end
 
-  it 'I can see a button that lets me view all of a users posts' do
-    expect(page).to have_link('See all posts')
+  it 'displays a button to see all posts' do
+    expect(page).to have_button('See all posts')
   end
 
-  it 'When I click a users post, it redirects me to that posts show page' do
-    click_link @forth_post.title
-    expect(current_path).to eq user_post_path(@user, @forth_post)
+  it 'redirects to post show page of a clicked post' do
+    click_link @post_two.title
+    expect(page).to have_current_path(user_post_path(@user, @post_two))
   end
 
-  it 'When I click to see all posts, it redirects me to the users posts index page' do
+  it 'redirects to post show page of a clicked post' do
+    click_link @post_three.title
+    expect(page).to have_current_path(user_post_path(@user, @post_three))
+  end
+
+  it 'redirects to the posts index page of the user when one clicks the see all posts button' do
     click_link 'See all posts'
-    expect(current_path).to eq user_posts_path(@user)
+    expect(page).to have_current_path(user_posts_path(@user))
   end
 end
