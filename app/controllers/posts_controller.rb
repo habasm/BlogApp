@@ -1,15 +1,7 @@
 class PostsController < ApplicationController
-  before_action :authenticate_user!, only: %i[new create delete]
-
   def index
     @user = User.find(params[:user_id])
-    @post = @user.posts.includes(:comments)
-  end
-
-  def show
-    @user = User.find(params[:user_id])
-    @post = Post.find(params[:id])
-    @comment = Comment.new
+    @posts = @user.posts.includes(:comments).page(params[:page]).per(5)
   end
 
   def new
@@ -17,29 +9,27 @@ class PostsController < ApplicationController
   end
 
   def create
-    @user = current_user
-    @post = @user.posts.new(posts_params)
-    @post.author_id = @user.id
+    @post = current_user.posts.new(post_params)
     if @post.save
-      flash[:notice] = 'Post published succesfully'
-      redirect_to user_post_path(@user.id, @post)
+      flash[:success] = 'Post created successfully'
+      redirect_to user_posts_path(current_user, @post)
     else
-      flash[:error] = @post.errors.full_messages[0]
-      redirect_to new_post_path
+      flash.now[:error] = 'Error creating post'
+      render :new
     end
   end
 
-  def destroy
-    @user = current_user
-    @user_post = User.find(params[:user_id])
-    @post = Post.find(params[:id])
-    @post.destroy
-    @user_post.decrement(:post_counter)
-    @user_post.save
-    redirect_to user_posts_path(@user_post.id)
+  def show
+    set_post
   end
 
-  def posts_params
+  private
+
+  def post_params
     params.require(:post).permit(:title, :text)
+  end
+
+  def set_post
+    @post = Post.find(params[:id])
   end
 end

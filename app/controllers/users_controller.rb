@@ -1,15 +1,17 @@
 class UsersController < ApplicationController
+  before_action :authenticate_user!
+  protect_from_forgery with: :exception
   def index
     @users = User.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @users }
-    end
   end
 
   def show
+    set_user
+  end
+
+  private
+
+  def set_user
     @user = User.find(params[:id])
-    @list_of_posts = @user.recent_posts
   end
 end
